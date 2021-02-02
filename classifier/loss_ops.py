@@ -67,27 +67,6 @@ def sigmoid(logits, labels):
     return loss
 
 
-def sigmoid_relu(logits, labels, thresh=0.5):
-    prob = tf.nn.sigmoid(logits)
-    scores_diff = tf.abs(labels['label_map'] - prob)
-    scores_relu = tf.nn.relu(scores_diff - thresh)
-    reduction = tf.reduce_sum(scores_relu, 1)
-    loss = tf.reduce_mean(reduction, name='sigmoid_relu')
-    return loss
-
-
-def sigmoid_relu2(logits, labels, thresh=0.5):
-    label_map = labels['label_map']
-    label_zero = tf.cast(tf.equal(label_map, 0), tf.float32)
-    label_map = label_map - label_zero
-    prob = tf.nn.sigmoid(logits)
-    scores_delta = thresh - prob
-    scores_relu = tf.nn.relu(scores_delta * label_map)
-    reduction = tf.reduce_sum(scores_relu, 1)
-    loss = tf.reduce_mean(reduction, name='sigmoid_relu')
-    return loss
-
-
 def softmax_1(logits, labels):
     """
      Defines the loss function. In case of multi label, instead of one hot
@@ -143,30 +122,10 @@ def lsep(logits, labels, num_classes, weighted_pairs):
     return loss
 
 
-def log_loss(predictions, labels, epsilon=1e-7, reduction=True):
-    tf.logging.info('Log Loss')
-    labels = labels['label_map']
-    loss = -tf.multiply(labels, tf.log(predictions + epsilon)) - tf.multiply(
-        (1 - labels), tf.log(1 - predictions + epsilon))
-    if reduction:
-        # pos_labels = tf.cast(tf.equal(labels, 1), tf.float32)
-        # neg_labels = tf.cast(tf.equal(labels, 0), tf.float32)
-        # n_pos = tf.reduce_sum(pos_labels)
-        # n_neg = tf.reduce_sum(neg_labels)
-        # weights = pos_labels * 1/n_pos + neg_labels * 1/n_neg
-        reduction = tf.reduce_sum(loss, 1)
-        loss = tf.reduce_mean(reduction, name='log_loss')
-    return loss
-
-
 def add_prediction(loss_name, logits, thresh=0.5):
     if loss_name == 'softmax':
         prediction = tf.nn.softmax(logits, name='Predictions')
     elif loss_name == 'sigmoid':
-        prediction = tf.nn.sigmoid(logits, name='Predictions')
-    elif loss_name == 'sigmoid_relu':
-        prediction = tf.nn.sigmoid(logits, name='Predictions')
-    elif loss_name == 'sigmoid_relu2':
         prediction = tf.nn.sigmoid(logits, name='Predictions')
     else:
         prediction = logits
@@ -184,12 +143,6 @@ def add_loss(num_classes, loss_name, logits, labels, thresh=None):
         loss = ranking(logits, labels, num_classes, True)
     elif loss_name == 'lsep':
         loss = lsep(logits, labels, num_classes, False)
-    elif loss_name == 'sigmoid_relu':
-        loss = sigmoid_relu(logits, labels, thresh)
-    elif loss_name == 'sigmoid_relu2':
-        loss = sigmoid_relu2(logits, labels, thresh)
-    elif loss_name == 'log_loss':
-        loss = log_loss(logits, labels)
     tf.add_to_collection(tf.GraphKeys.LOSSES,loss)
     return loss
 
