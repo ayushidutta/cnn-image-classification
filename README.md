@@ -10,7 +10,7 @@ Contains code for training and testing CNNs for multi-label image classification
 
 ## Dataset
 
-The '_data_' folder contains the train/test splits of all datasets used in this experiment. For images, please refer to the individual dataset's page. 
+The '_data_' folder contains the train/test splits of _nuswide_ dataset as an example. For the images and other relevant details, please refer to the individual dataset's page. 
 
 ## Extracting CNN features
 
