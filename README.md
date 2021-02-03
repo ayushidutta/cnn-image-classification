@@ -6,7 +6,6 @@ Contains code for training and testing CNNs for multi-label image classification
 - Tensorflow 1.3
 - Tensorflow Slim
 - Python 2
-- Numpy
 
 ## Dataset
 
@@ -76,9 +75,11 @@ When testing CNN, the performance metrics of the test dataset will be printed. R
 
 ## Train CNN(Additional Option): with end-to-end network from images
 
-Following Tensorflow, the dataset with images and corresponding labels, are saved in _.tfrecord_ format. Refer to the _convert_nuswide.py_ script in the _datasets_ folder as an example as to how this has been done for the _NUSWIDE_ dataset.
-
-Run the following, having changed any needed arguments.
+Following Tensorflow, the dataset with images and corresponding labels, are saved in _.tfrecord_ format. Refer to the _convert_nuswide.py_ script in the _datasets_ folder as an example as to how this has been done for the _NUSWIDE_ dataset, and run.
+```
+python datasets/download_and_convert_data.py --dataset_name=nuswide --dataset_dir=./data/nuswide
+```
+To train, run the following, having changed any needed arguments.
 ```
 DATASET_DIR=../data/nuswide/
 TRAIN_DIR=../data/nuswide/net-incep-v4/
